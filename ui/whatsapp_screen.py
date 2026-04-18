@@ -588,7 +588,7 @@ class WhatsAppScreen(QWidget):
         if caller != "_on_invoice_selected" and caller != "<lambda>": # Standard currentIndexChanged trigger
              self.inv_phone.setText(inv.party_phone or "")
              
-        from fabricpos.services.whatsapp_service import WhatsAppService
+        from services.whatsapp_service import WhatsAppService
         
         # Pick template based on language selection
         if hasattr(self, 'inv_lang_combo') and self.inv_lang_combo.currentText() == "Marathi":
@@ -619,8 +619,8 @@ class WhatsAppScreen(QWidget):
             return
         self.rem_phone.setText(party.phone or "")
         self.rem_amount.setText(f"{party.balance:.2f}")
-        from fabricpos.services.whatsapp_service import WhatsAppService
-        from fabricpos.config import SHOP_NAME, PHONE
+        from services.whatsapp_service import WhatsAppService
+        from config import SHOP_NAME, PHONE
         body = WhatsAppService.REMINDER_MSG.format(
             name=party.name, due=party.balance,
             shop=SHOP_NAME, phone=PHONE
@@ -691,7 +691,7 @@ class WhatsAppScreen(QWidget):
         # We'll use a wrapper to send everything in the thread
         def bulk_send_wrapper():
             from time import sleep
-            from fabricpos.config import WHATSAPP_BACKEND
+            from config import WHATSAPP_BACKEND
             
             success, failed = 0, 0
             for i, r in enumerate(recipients):
