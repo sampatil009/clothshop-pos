@@ -24,7 +24,10 @@ WARN_BG       = "#fff3e0"
 
 # ─── STYLESHEETS ──────────────────────────────────────────────────────────────
 APP_STYLE = f"""
-QMainWindow, QWidget {{ background: {SURFACE}; color: {ON_SURFACE}; }}
+QMainWindow, QWidget {{ background: {SURFACE}; color: {ON_SURFACE}; border: none; }}
+QLabel {{ background: transparent; border: none; }}
+QGroupBox {{ border: 1px solid {OUTLINE}; border-radius: 4px; padding-top: 10px; margin-top: 10px; }}
+QGroupBox::title {{ subcontrol-origin: margin; left: 10px; padding: 0 3px; }}
 QScrollArea {{ border: none; background: transparent; }}
 QScrollBar:vertical {{
     background: {SURF_LOW}; width: 6px; border-radius: 3px;
@@ -44,17 +47,35 @@ QLineEdit {{
 QLineEdit:focus {{ border-bottom: 2px solid {SECONDARY}; }}
 QLineEdit::placeholder {{ color: {ON_SURF_VAR}; }}
 QComboBox {{
+    combobox-popup: 0;
     background: {SURF_CARD}; border: none;
     border-bottom: 2px solid {OUTLINE};
-    padding: 7px 12px; color: {ON_SURFACE}; font-size: 13px;
+    padding: 10px 15px; color: {ON_SURFACE}; font-size: 15px;
     border-radius: 0px;
 }}
 QComboBox:focus {{ border-bottom: 2px solid {SECONDARY}; }}
-QComboBox::drop-down {{ border: none; width: 24px; }}
-QComboBox QAbstractItemView {{
-    background: {SURF_CARD}; border: 1px solid {OUTLINE};
+QComboBox::drop-down {{ border: none; width: 30px; }}
+
+/* Force the popup list to respect sizing */
+QComboBox QAbstractItemView, QComboBox QListView {{
+    background-color: #ffffff;
+    border: 1px solid {OUTLINE};
     selection-background-color: {SEC_CONTAINER};
-    color: {ON_SURFACE};
+    selection-color: {PRIMARY};
+    outline: none;
+    font-size: 16px;
+    min-width: 250px;
+}}
+QComboBox QAbstractItemView::item, QComboBox QListView::item {{
+    min-height: 40px;
+    padding: 8px 15px;
+    background-color: transparent;
+    border-bottom: 1px solid #f1f5f9;
+}}
+QComboBox QAbstractItemView::item:selected, QComboBox QListView::item:selected {{
+    background-color: {SEC_CONTAINER};
+    color: {PRIMARY};
+    font-weight: bold;
 }}
 QTableWidget {{
     background: {SURF_CARD}; border: none;
@@ -159,7 +180,7 @@ def make_label(text, size=13, color=ON_SURFACE, bold=False, font_size=None):
     fs = font_size or size
     w = QFont.Bold if bold else QFont.Normal
     lbl.setFont(QFont("Segoe UI", fs, w))
-    lbl.setStyleSheet(f"color: {color}; background: transparent;")
+    lbl.setStyleSheet(f"color: {color}; background: transparent; border: none;")
     return lbl
 
 def divider():

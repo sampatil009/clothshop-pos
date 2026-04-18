@@ -30,21 +30,30 @@ class Party:
 class InvoiceItem:
     product_id: int
     product_name: str
-    quantity: int
-    unit_price: float
-    gst_rate: float
-    total: float
+    hsn_code: str = ""
+    quantity: int = 1
+    unit_price: float = 0.0
+    gst_rate: float = 12.0
+    total: float = 0.0
 
 @dataclass
 class Invoice:
     id: Optional[int] = None
     invoice_number: str = ""
     date: datetime = field(default_factory=datetime.now)
+    due_date: Optional[datetime] = None
     party_id: Optional[int] = None
     party_name: str = ""
+    party_phone: str = ""
+    customer_address: str = ""
+    customer_notes: str = ""
     items: List[InvoiceItem] = field(default_factory=list)
     subtotal: float = 0.0
     gst_total: float = 0.0
+    cgst: float = 0.0
+    sgst: float = 0.0
+    discount: float = 0.0
     grand_total: float = 0.0
     payment_mode: str = "Cash"  # Cash, Card, UPI, Credit
     status: str = "Paid"  # Paid, Unpaid, Partial
+    party_phone: str = "" 

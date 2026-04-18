@@ -2,10 +2,11 @@ from PyQt5.QtWidgets import (QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
                               QPushButton, QLabel, QStackedWidget, QFrame, QLineEdit, QSizePolicy)
 from PyQt5.QtCore import Qt, QSize
 from PyQt5.QtGui import QFont
-from fabricpos.ui.inventory import InventoryScreen
-from fabricpos.ui.pos_screen import POSScreen
-from fabricpos.ui.login import LoginScreen
-from fabricpos.ui.theme import (PRIMARY, PRIMARY_CONT, SECONDARY, ON_SURFACE, 
+from ui.inventory import InventoryScreen
+from ui.pos_screen import POSScreen
+from ui.login import LoginScreen
+from ui.whatsapp_screen import WhatsAppScreen
+from ui.theme import (PRIMARY, PRIMARY_CONT, SECONDARY, ON_SURFACE, 
                                 ON_SURF_VAR, SURF_CARD, SURF_HIGH, SURF_LOW, 
                                 NAV_BTN_STYLE, PRIMARY_BTN, SECONDARY_BTN, SIDEBAR_STYLE,
                                 make_label, divider)
@@ -62,7 +63,8 @@ class Sidebar(QWidget):
             ("\ue12a", "Accounting", 2), # Using \ue12a for Journal/Book
             ("\ue125", "CRM / Parties", 3),
             ("\ue19d", "Reports", 4),
-            ("\ue115", "Settings", 5),
+            ("\ue170", "WhatsApp", 5),
+            ("\ue115", "Settings", 6),
         ]
         
         icon_font = QFont("Segoe UI Symbol", 12)
@@ -201,6 +203,7 @@ class MainWindow(QMainWindow):
         self.content_stack.addWidget(self.create_placeholder("Parties & Ledger"))
         self.content_stack.addWidget(self.create_placeholder("CRM / CRM Explorer"))
         self.content_stack.addWidget(self.create_placeholder("Reports Dashboard"))
+        self.content_stack.addWidget(WhatsAppScreen())
         self.content_stack.addWidget(self.create_placeholder("Settings"))
         
         right_lay.addWidget(self.content_stack)
@@ -225,7 +228,7 @@ class MainWindow(QMainWindow):
         self.content_stack.setCurrentIndex(index)
         
         # Update TopBar title
-        titles = ["POS Dashboard", "Inventory Management", "Accounting & Ledger", "CRM Explorer", "Performance Reports", "System Settings"]
+        titles = ["POS Dashboard", "Inventory Management", "Accounting & Ledger", "CRM Explorer", "Performance Reports", "WhatsApp Messaging", "System Settings"]
         if index < len(titles):
             self.top_bar.title_lbl.setText(titles[index])
 

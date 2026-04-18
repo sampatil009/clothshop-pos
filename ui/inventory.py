@@ -3,8 +3,8 @@ from PyQt5.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QTableWidget,
                              QFormLayout, QDialog, QMessageBox, QLabel, QFrame,
                              QAbstractItemView, QProgressBar)
 from PyQt5.QtCore import Qt
-from fabricpos.services.db import get_db, ProductModel
-from fabricpos.ui.theme import (PRIMARY, SECONDARY, TERTIARY, ON_SURFACE, 
+from services.db import get_db, ProductModel
+from ui.theme import (PRIMARY, SECONDARY, TERTIARY, ON_SURFACE, 
                                 ON_SURF_VAR, SURFACE, SURF_CARD, SURF_HIGH, 
                                 SURF_LOW, SUCCESS_BG, WARN_BG, ERROR_BG, SEC_CONTAINER, PRIMARY_BTN,
                                 GHOST_BTN, CARD_STYLE, make_label, status_pill)

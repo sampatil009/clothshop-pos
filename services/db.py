@@ -7,7 +7,7 @@ import sys
 
 # Add the parent directory to sys.path to allow relative imports
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from fabricpos.config import DB_PATH
+from config import DB_PATH
 
 Base = declarative_base()
 
@@ -40,15 +40,34 @@ class InvoiceModel(Base):
     id = Column(Integer, primary_key=True)
     invoice_number = Column(String(50), unique=True)
     date = Column(DateTime, default=datetime.now)
+    due_date = Column(DateTime)
     party_id = Column(Integer, ForeignKey('parties.id'))
     party_name = Column(String(200))
+    party_phone = Column(String(20))
+    customer_address = Column(Text)
+    customer_notes = Column(Text)
     subtotal = Column(Float, default=0.0)
     gst_total = Column(Float, default=0.0)
+    cgst = Column(Float, default=0.0)
+    sgst = Column(Float, default=0.0)
+    discount = Column(Float, default=0.0)
     grand_total = Column(Float, default=0.0)
     payment_mode = Column(String(50), default="Cash")
     status = Column(String(50), default="Paid")
     
     items = relationship("InvoiceItemModel", back_populates="invoice")
+
+class WhatsAppLogModel(Base):
+    __tablename__ = 'whatsapp_logs'
+    id = Column(Integer, primary_key=True)
+    sent_at = Column(DateTime, default=datetime.now)
+    phone = Column(String(20), nullable=False)
+    party_name = Column(String(200))
+    message_type = Column(String(50)) # invoice, reminder, custom
+    invoice_no = Column(String(50))
+    message_body = Column(Text)
+    status = Column(String(50)) # sent, failed
+    error_msg = Column(Text)
 
 class InvoiceItemModel(Base):
     __tablename__ = 'invoice_items'
@@ -56,6 +75,7 @@ class InvoiceItemModel(Base):
     invoice_id = Column(Integer, ForeignKey('invoices.id'))
     product_id = Column(Integer, ForeignKey('products.id'))
     product_name = Column(String(200))
+    hsn_code = Column(String(20))
     quantity = Column(Integer, default=1)
     unit_price = Column(Float, default=0.0)
     gst_rate = Column(Float, default=12.0)

@@ -19,6 +19,12 @@ PHONE = "+91 98765 43210"
 DEFAULT_GST = 12.0  # Percentage
 CURRENCY = "₹"
 
+# WhatsApp Messaging
+WHATSAPP_BACKEND = "pywhatkit"  # Options: 'pywhatkit' or 'twilio'
+TWILIO_ACCOUNT_SID = ""
+TWILIO_AUTH_TOKEN = ""
+TWILIO_FROM_NUMBER = ""
+
 # UI Settings
 THEME_COLOR = "#2c3e50"
 ACCENT_COLOR = "#3498db"
