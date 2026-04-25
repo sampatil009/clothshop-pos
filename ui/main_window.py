@@ -6,8 +6,12 @@ from ui.inventory import InventoryScreen
 from ui.pos_screen import POSScreen
 from ui.login import LoginScreen
 from ui.whatsapp_screen import WhatsAppScreen
+<<<<<<< HEAD
 from ui.crm_screen import CRMScreen
 from ui.reports_screen import ReportsScreen
+=======
+from ui.settings_screen import SettingsScreen
+>>>>>>> c12e3bdd3a28e62815430c98114dbddaf7acec41
 from ui.theme import (PRIMARY, PRIMARY_CONT, SECONDARY, ON_SURFACE, 
                                 ON_SURF_VAR, SURF_CARD, SURF_HIGH, SURF_LOW, 
                                 NAV_BTN_STYLE, PRIMARY_BTN, SECONDARY_BTN, SIDEBAR_STYLE,
@@ -203,10 +207,17 @@ class MainWindow(QMainWindow):
         self.content_stack.addWidget(POSScreen())
         self.content_stack.addWidget(InventoryScreen())
         self.content_stack.addWidget(self.create_placeholder("Parties & Ledger"))
+<<<<<<< HEAD
         self.content_stack.addWidget(CRMScreen())
         self.content_stack.addWidget(ReportsScreen())
         self.content_stack.addWidget(WhatsAppScreen())
         self.content_stack.addWidget(self.create_placeholder("Settings"))
+=======
+        self.content_stack.addWidget(self.create_placeholder("CRM / CRM Explorer"))
+        self.content_stack.addWidget(self.create_placeholder("Reports Dashboard"))
+        self.content_stack.addWidget(WhatsAppScreen())
+        self.content_stack.addWidget(SettingsScreen())
+>>>>>>> c12e3bdd3a28e62815430c98114dbddaf7acec41
         
         right_lay.addWidget(self.content_stack)
         dash_root.addWidget(right_container)

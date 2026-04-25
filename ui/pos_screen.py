@@ -3,11 +3,19 @@ import sys
 from datetime import datetime
 from PyQt5.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QScrollArea, 
                              QGridLayout, QPushButton, QLineEdit, QLabel, 
+<<<<<<< HEAD
                              QFrame, QMessageBox, QComboBox, QSizePolicy, 
                              QGraphicsDropShadowEffect, QInputDialog, QTableWidget, QTableWidgetItem, 
                              QHeaderView, QDateEdit, QTextEdit, QCompleter)
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QColor
+=======
+                             QFrame, QMessageBox, QSizePolicy, 
+                             QGraphicsDropShadowEffect, QInputDialog, QTableWidget, QTableWidgetItem, 
+                             QHeaderView, QDateEdit, QTextEdit, QListWidget, QListWidgetItem)
+from PyQt5.QtCore import Qt, QObject, QEvent, QTimer
+from PyQt5.QtGui import QColor, QFont
+>>>>>>> c12e3bdd3a28e62815430c98114dbddaf7acec41
 from services.db import get_db, ProductModel
 from services.sales_service import SalesService
 from services.print_service import PrintService
@@ -29,11 +37,17 @@ class POSScreen(QWidget):
 
     def init_ui(self):
         # Professional background: neutral gray
+<<<<<<< HEAD
         self.setStyleSheet("background: #f8fafc;")
+=======
+        self.setObjectName("POSScreen")
+        self.setStyleSheet("QWidget#POSScreen { background: #f8fafc; }")
+>>>>>>> c12e3bdd3a28e62815430c98114dbddaf7acec41
         main_lay = QVBoxLayout(self)
         main_lay.setContentsMargins(0, 0, 0, 0)
         main_lay.setSpacing(0)
 
+<<<<<<< HEAD
         scroll = QScrollArea()
         scroll.setWidgetResizable(True)
         scroll.setStyleSheet("background: transparent; border: none;")
@@ -42,6 +56,17 @@ class POSScreen(QWidget):
         # Main Container
         container = QWidget()
         container.setStyleSheet("background: white; border-radius: 8px;")
+=======
+        self._scroll = QScrollArea()
+        self._scroll.setWidgetResizable(True)
+        self._scroll.setStyleSheet("background: transparent; border: none;")
+        main_lay.addWidget(self._scroll)
+
+        # Main Container
+        container = QWidget()
+        container.setObjectName("MainContainer")
+        container.setStyleSheet("QWidget#MainContainer { background: white; border-radius: 8px; }")
+>>>>>>> c12e3bdd3a28e62815430c98114dbddaf7acec41
         lay = QVBoxLayout(container)
         lay.setContentsMargins(30, 20, 30, 30)
         lay.setSpacing(25)
@@ -53,7 +78,11 @@ class POSScreen(QWidget):
         
         centering_w = QWidget()
         centering_w.setLayout(centering_lay)
+<<<<<<< HEAD
         scroll.setWidget(centering_w)
+=======
+        self._scroll.setWidget(centering_w)
+>>>>>>> c12e3bdd3a28e62815430c98114dbddaf7acec41
 
         # 1. Professional Header
         head_lay = QHBoxLayout()
@@ -74,7 +103,11 @@ class POSScreen(QWidget):
         # Labels above fields
         def add_field(label, row, col, widget=None):
             lbl = QLabel(label)
+<<<<<<< HEAD
             lbl.setStyleSheet("font-weight: bold; color: #64748b; font-size: 11px; text-transform: uppercase;")
+=======
+            lbl.setStyleSheet("font-weight: bold; color: #64748b; font-size: 13px; text-transform: uppercase;")
+>>>>>>> c12e3bdd3a28e62815430c98114dbddaf7acec41
             info_lay.addWidget(lbl, row, col)
             if widget:
                 widget.setStyleSheet("padding: 10px; background: white; border: 1px solid #cbd5e1; border-radius: 6px;")
@@ -109,6 +142,7 @@ class POSScreen(QWidget):
         bar_lay.setContentsMargins(15, 10, 15, 10)
         bar_lay.setSpacing(10)
 
+<<<<<<< HEAD
         # Product Selector
         prod_v = QVBoxLayout()
         prod_lbl = QLabel("SELECT PRODUCT")
@@ -120,12 +154,47 @@ class POSScreen(QWidget):
         self.prod_select.setStyleSheet("padding: 8px; background: white; border: 1px solid #cbd5e1; border-radius: 6px;")
         self.prod_select.currentIndexChanged.connect(self.on_product_selected)
         prod_v.addWidget(self.prod_select)
+=======
+        # Product Selector - QLineEdit + inline QListWidget dropdown
+        prod_v = QVBoxLayout()
+        prod_v.setSpacing(0)
+        prod_lbl = QLabel("SELECT PRODUCT")
+        prod_lbl.setStyleSheet("font-size: 13px; color: #64748b; font-weight: bold; margin-bottom: 4px;")
+        prod_v.addWidget(prod_lbl)
+        
+        self._selected_product = None
+        self.prod_search = QLineEdit()
+        self.prod_search.setPlaceholderText("Click to search products...")
+        self.prod_search.setStyleSheet("padding: 8px 12px; background: white; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px;")
+        self.prod_search.textChanged.connect(self._filter_products)
+        self.prod_search.setProperty("has_dropdown", True)  # Exempts from global nav filter
+        self.prod_search.installEventFilter(self)
+        prod_v.addWidget(self.prod_search)
+        
+        # Floating overlay dropdown list — child of scroll viewport so it overlays without shifting layout
+        self.prod_list = QListWidget(self._scroll.viewport())
+        self.prod_list.setFocusPolicy(Qt.NoFocus)
+        self.prod_list.setFont(QFont("Segoe UI", 13))
+        self.prod_list.setVisible(False)
+        self.prod_list.setStyleSheet("""
+            QListWidget { background: white; border: 1px solid #cbd5e1; border-radius: 0 0 6px 6px; outline: none; }
+            QListWidget::item { padding: 10px 15px; min-height: 38px; font-size: 14px; border-bottom: 1px solid #f1f5f9; }
+            QListWidget::item:selected { background: #e2e8f0; color: #0f172a; }
+            QListWidget::item:hover { background: #f8fafc; }
+        """)
+        self.prod_list.itemClicked.connect(self.on_product_selected)
+        
+>>>>>>> c12e3bdd3a28e62815430c98114dbddaf7acec41
         bar_lay.addLayout(prod_v, 4)
 
         # Qty
         qty_v = QVBoxLayout()
         qty_lbl = QLabel("QTY")
+<<<<<<< HEAD
         qty_lbl.setStyleSheet("font-size: 10px; color: #64748b; font-weight: bold;")
+=======
+        qty_lbl.setStyleSheet("font-size: 13px; color: #64748b; font-weight: bold;")
+>>>>>>> c12e3bdd3a28e62815430c98114dbddaf7acec41
         qty_v.addWidget(qty_lbl)
         self.qty_input = QLineEdit()
         self.qty_input.setFixedWidth(80)
@@ -136,7 +205,11 @@ class POSScreen(QWidget):
         # Rate
         rate_v = QVBoxLayout()
         rate_lbl = QLabel("RATE")
+<<<<<<< HEAD
         rate_lbl.setStyleSheet("font-size: 10px; color: #64748b; font-weight: bold;")
+=======
+        rate_lbl.setStyleSheet("font-size: 13px; color: #64748b; font-weight: bold;")
+>>>>>>> c12e3bdd3a28e62815430c98114dbddaf7acec41
         rate_v.addWidget(rate_lbl)
         self.rate_input = QLineEdit()
         self.rate_input.setFixedWidth(100)
@@ -154,6 +227,7 @@ class POSScreen(QWidget):
 
         # 4. Table
         self.table = QTableWidget(0, 5)
+<<<<<<< HEAD
         self.table.setHorizontalHeaderLabels(["Item", "Qty", "Rate", "Amount", ""])
         self.table.horizontalHeader().setSectionResizeMode(0, QHeaderView.Stretch)
         self.table.setColumnWidth(4, 50)
@@ -161,6 +235,18 @@ class POSScreen(QWidget):
             QTableWidget { background: white; border: 1px solid #e2e8f0; border-radius: 8px; gridline-color: #f1f5f9; }
             QHeaderView::section { background: #1e293b; color: white; padding: 12px; border: none; font-weight: bold; }
             QTableWidget::item { padding: 15px; border-bottom: 1px solid #f1f5f9; }
+=======
+        self.table.setFont(QFont("Segoe UI", 12))
+        self.table.setHorizontalHeaderLabels(["Item", "Qty", "Rate", "Amount", ""])
+        self.table.horizontalHeader().setSectionResizeMode(0, QHeaderView.Stretch)
+        self.table.verticalHeader().setVisible(False)
+        self.table.verticalHeader().setDefaultSectionSize(50)
+        self.table.setColumnWidth(4, 70)
+        self.table.setStyleSheet("""
+            QTableWidget { font-size: 14px; background: white; border: 1px solid #e2e8f0; border-radius: 8px; gridline-color: #f1f5f9; }
+            QHeaderView::section { background: #1e293b; color: white; padding: 12px; border: none; font-weight: bold; font-size: 13px; }
+            QTableWidget::item { padding: 8px 15px; border-bottom: 1px solid #f1f5f9; }
+>>>>>>> c12e3bdd3a28e62815430c98114dbddaf7acec41
         """)
         self.table.setMinimumHeight(350)
         lay.addWidget(self.table)
@@ -171,7 +257,11 @@ class POSScreen(QWidget):
 
         # Notes (Left)
         notes_v = QVBoxLayout()
+<<<<<<< HEAD
         notes_v.addWidget(make_label("CUSTOMER NOTES", 11, "#64748b", bold=True))
+=======
+        notes_v.addWidget(make_label("CUSTOMER NOTES", 13, "#64748b", bold=True))
+>>>>>>> c12e3bdd3a28e62815430c98114dbddaf7acec41
         self.cust_notes = QLineEdit()
         self.cust_notes.setPlaceholderText("Optional notes for the invoice...")
         self.cust_notes.setStyleSheet("padding: 12px; border: 1px solid #e2e8f0; border-radius: 6px;")
@@ -187,7 +277,47 @@ class POSScreen(QWidget):
         summary_card.setStyleSheet("QFrame#SummaryCard { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 15px; }")
         summ_lay = QVBoxLayout(summary_card)
         self.subtotal_lbl = self._add_pro_row(summ_lay, "SUBTOTAL")
+<<<<<<< HEAD
         self.gst_lbl = self._add_pro_row(summ_lay, "GST TAX (5%)")
+=======
+        
+        # Discount row
+        disc_row = QHBoxLayout()
+        disc_row.setSpacing(8)
+        
+        disc_lbl = QLabel("DISCOUNT")
+        disc_lbl.setStyleSheet("color: #64748b; font-size: 13px; font-weight: bold;")
+        
+        # Input + % suffix wrapped together
+        disc_input_wrap = QFrame()
+        disc_input_wrap.setStyleSheet("QFrame { background: white; border: 1px solid #cbd5e1; border-radius: 6px; }")
+        disc_input_inner = QHBoxLayout(disc_input_wrap)
+        disc_input_inner.setContentsMargins(8, 0, 8, 0)
+        disc_input_inner.setSpacing(4)
+        
+        self.discount_input = QLineEdit()
+        self.discount_input.setText("0")
+        self.discount_input.setFixedWidth(55)
+        self.discount_input.setAlignment(Qt.AlignCenter)
+        self.discount_input.setStyleSheet("border: none; background: transparent; font-size: 15px; font-weight: bold; color: #0f172a; padding: 8px 0;")
+        self.discount_input.textChanged.connect(self.render_table)
+        
+        disc_suffix = QLabel("%")
+        disc_suffix.setStyleSheet("color: #64748b; font-size: 14px; font-weight: bold; border: none; background: transparent;")
+        
+        disc_input_inner.addWidget(self.discount_input)
+        disc_input_inner.addWidget(disc_suffix)
+        
+        self.discount_amt_lbl = QLabel("- ₹0.00")
+        self.discount_amt_lbl.setStyleSheet("font-weight: bold; color: #10b981; font-size: 14px;")
+        
+        disc_row.addWidget(disc_lbl)
+        disc_row.addWidget(disc_input_wrap)
+        disc_row.addStretch()
+        disc_row.addWidget(self.discount_amt_lbl)
+        summ_lay.addLayout(disc_row)
+        
+>>>>>>> c12e3bdd3a28e62815430c98114dbddaf7acec41
         summ_lay.addWidget(divider())
         self.grand_total_lbl = self._add_pro_row(summ_lay, "GRAND TOTAL", grand=True)
         checkout_v.addWidget(summary_card)
@@ -217,7 +347,11 @@ class POSScreen(QWidget):
             lbl.setStyleSheet("font-weight: bold; color: #1e293b; font-size: 14px;")
             v_lbl.setStyleSheet("font-weight: bold; color: #ef4444; font-size: 20px;")
         else:
+<<<<<<< HEAD
             lbl.setStyleSheet("color: #64748b; font-size: 12px;")
+=======
+            lbl.setStyleSheet("color: #64748b; font-size: 13px;")
+>>>>>>> c12e3bdd3a28e62815430c98114dbddaf7acec41
             v_lbl.setStyleSheet("font-weight: bold; color: #1e293b; font-size: 14px;")
         
         row.addWidget(lbl)
@@ -230,10 +364,89 @@ class POSScreen(QWidget):
         next_num = SalesService.get_next_invoice_number()
         self.order_id_lbl.setText(f"<b>Invoice No:</b> #{next_num}")
 
+<<<<<<< HEAD
+=======
+    def eventFilter(self, obj, event):
+        """Handle keyboard navigation for product search dropdown."""
+        if obj == self.prod_search and event.type() == QEvent.KeyPress:
+            key = event.key()
+            
+            if key == Qt.Key_Down:
+                if not self.prod_list.isVisible():
+                    self._show_product_popup()
+                count = self.prod_list.count()
+                if count > 0:
+                    cur = self.prod_list.currentRow()
+                    self.prod_list.setCurrentRow(min(cur + 1, count - 1) if cur >= 0 else 0)
+                return True
+            
+            elif key == Qt.Key_Up:
+                if self.prod_list.isVisible():
+                    cur = self.prod_list.currentRow()
+                    if cur > 0:
+                        self.prod_list.setCurrentRow(cur - 1)
+                return True
+            
+            elif key in (Qt.Key_Return, Qt.Key_Enter):
+                if self.prod_list.isVisible():
+                    item = self.prod_list.currentItem()
+                    if item:
+                        self.on_product_selected(item)
+                        return True
+                # Dropdown closed but product selected — trigger add
+                if self._selected_product:
+                    self.add_from_selector()
+                    return True
+                return False
+            
+            elif key == Qt.Key_Escape:
+                self._hide_product_popup()
+                return True
+        
+        elif obj == self.prod_search:
+            if event.type() == QEvent.FocusIn:
+                self._show_product_popup()
+            elif event.type() == QEvent.FocusOut:
+                QTimer.singleShot(150, self._hide_product_popup)
+        
+        return super().eventFilter(obj, event)
+
+    def _show_product_popup(self):
+        if self.prod_list.count() == 0:
+            return
+        # Map prod_search bottom-left to the scroll viewport coordinate space
+        vp = self._scroll.viewport()
+        pos = self.prod_search.mapTo(vp, self.prod_search.rect().bottomLeft())
+        w = self.prod_search.width()
+        h = min(self.prod_list.count() * 48 + 8, 220)
+        self.prod_list.setGeometry(pos.x(), pos.y(), w, h)
+        self.prod_list.show()
+        self.prod_list.raise_()
+
+    def _hide_product_popup(self):
+        self.prod_list.setVisible(False)
+
+    def _filter_products(self, text):
+        """Filter the dropdown list as the user types."""
+        # Only clear selected product if user is actually typing something different
+        if self._selected_product and text == self._selected_product.name:
+            return  # Text was set by on_product_selected, don't re-filter
+        self._selected_product = None
+        self.prod_list.clear()
+        text = text.strip().lower()
+        matches = [p for p in self.products if text in p.name.lower()] if text else self.products
+        for p in matches:
+            item = QListWidgetItem(p.name)
+            item.setData(Qt.UserRole, p)
+            self.prod_list.addItem(item)
+        self._show_product_popup()
+
+>>>>>>> c12e3bdd3a28e62815430c98114dbddaf7acec41
     def load_products(self):
         db = get_db()
         try:
             self.products = db.query(ProductModel).all()
+<<<<<<< HEAD
             self.prod_select.clear()
             self.prod_select.addItem("Product", None)
             for p in self.products:
@@ -269,6 +482,49 @@ class POSScreen(QWidget):
                 self.qty_input.clear()
             except ValueError:
                 QMessageBox.warning(self, "Invalid Input", "Please enter valid numbers for quantity and rate.")
+=======
+            self.prod_list.clear()
+            for p in self.products:
+                item = QListWidgetItem(p.name)
+                item.setData(Qt.UserRole, p)
+                self.prod_list.addItem(item)
+        finally:
+            db.close()
+
+    def on_product_selected(self, list_item):
+        """Called when a product is clicked or activated in the popup list."""
+        p = list_item.data(Qt.UserRole)
+        if p:
+            self._selected_product = p
+            # Block signals so setText doesn't trigger _filter_products and wipe _selected_product
+            self.prod_search.blockSignals(True)
+            self.prod_search.setText(p.name)
+            self.prod_search.blockSignals(False)
+            self.rate_input.setText(str(p.price))
+            self.qty_input.setText("1")
+            self._hide_product_popup()
+            self.qty_input.setFocus()
+
+    def add_from_selector(self):
+        p = self._selected_product
+        if not p:
+            return
+        try:
+            qty = float(self.qty_input.text() or 1)
+            rate = float(self.rate_input.text() or p.price)
+            self.add_to_cart(p, qty, rate)
+            
+            self._selected_product = None
+            self.prod_search.clear()
+            self.rate_input.clear()
+            self.qty_input.clear()
+            self._hide_product_popup()
+            self.prod_search.setFocus()
+        except ValueError:
+            QMessageBox.warning(self, "Invalid Input", "Please enter valid numbers for quantity and rate.")
+
+
+>>>>>>> c12e3bdd3a28e62815430c98114dbddaf7acec41
 
     def add_to_cart(self, product, qty=1, rate=None):
         if rate is None: rate = product.price
@@ -322,6 +578,7 @@ class POSScreen(QWidget):
             amt_item.setForeground(QColor("#0f172a"))
             self.table.setItem(i, 3, amt_item)
             
+<<<<<<< HEAD
             # Delete Btn (Modern X)
             del_btn = QPushButton("✕")
             del_btn.setStyleSheet("color: #94a3b8; border: none; background: transparent; font-size: 14px; font-weight: bold;")
@@ -337,6 +594,36 @@ class POSScreen(QWidget):
         
         self.subtotal_lbl.setText(f"₹{subtotal:,.2f}")
         self.gst_lbl.setText(f"₹{gst:,.2f}")
+=======
+            # Delete Btn Container
+            cell_widget = QWidget()
+            cell_lay = QHBoxLayout(cell_widget)
+            cell_lay.setContentsMargins(0, 0, 0, 0)
+            cell_lay.setAlignment(Qt.AlignCenter)
+            
+            del_btn = QPushButton("✕")
+            del_btn.setFixedSize(30, 30)
+            del_btn.setStyleSheet("QPushButton { background: #fee2e2; color: #ef4444; border: 1px solid #fca5a5; border-radius: 6px; font-size: 16px; font-weight: bold; } QPushButton:hover { background: #ef4444; color: white; }")
+            del_btn.setCursor(Qt.PointingHandCursor)
+            del_btn.clicked.connect(lambda _, idx=i: self.remove_item(idx))
+            
+            cell_lay.addWidget(del_btn)
+            self.table.setCellWidget(i, 4, cell_widget)
+            
+            subtotal += amt
+            
+        # Discount
+        try:
+            disc_pct = float(self.discount_input.text() or 0)
+        except ValueError:
+            disc_pct = 0
+        disc_pct = max(0, min(disc_pct, 100))
+        discount_amt = subtotal * (disc_pct / 100)
+        total = subtotal - discount_amt
+        
+        self.subtotal_lbl.setText(f"₹{subtotal:,.2f}")
+        self.discount_amt_lbl.setText(f"- ₹{discount_amt:,.2f}")
+>>>>>>> c12e3bdd3a28e62815430c98114dbddaf7acec41
         self.grand_total_lbl.setText(f"₹{total:,.2f}")
 
     def remove_item(self, index):
@@ -365,11 +652,23 @@ class POSScreen(QWidget):
                     total=item_amt * 1.05
                 ))
                 subtotal += item_amt
+<<<<<<< HEAD
+=======
+            
+            try:
+                disc_pct = float(self.discount_input.text() or 0)
+            except ValueError:
+                disc_pct = 0
+            disc_pct = max(0, min(disc_pct, 100))
+            discount_amt = subtotal * (disc_pct / 100)
+            grand_total = subtotal - discount_amt
+>>>>>>> c12e3bdd3a28e62815430c98114dbddaf7acec41
                 
             inv = Invoice(
                 invoice_number=SalesService.get_next_invoice_number(),
                 party_name=self.cust_name.text() or "Walk-in Customer",
                 party_phone=self.cust_phone.text(),
+<<<<<<< HEAD
                 customer_address="", # HTML didn't have address
                 customer_notes=self.cust_notes.text(),
                 due_date=datetime.now(), # Default to now as HTML didn't have due date
@@ -379,6 +678,17 @@ class POSScreen(QWidget):
                 cgst=subtotal * 0.025,
                 sgst=subtotal * 0.025,
                 grand_total=subtotal * 1.05,
+=======
+                customer_address="",
+                customer_notes=self.cust_notes.text(),
+                due_date=datetime.now(),
+                items=invoice_items,
+                subtotal=subtotal,
+                gst_total=0.0,
+                cgst=0.0,
+                sgst=0.0,
+                grand_total=grand_total,
+>>>>>>> c12e3bdd3a28e62815430c98114dbddaf7acec41
                 status="Paid"
             )
             
